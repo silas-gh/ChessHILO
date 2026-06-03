@@ -9,7 +9,8 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = 'dev'
 
-db = f"dbname='{os.getenv('DB_NAME')}' user='{os.getenv('DB_USER')}' host='localhost' password='{os.getenv('DB_PASS')}'"
+db = f"dbname='chesshilo' user='postgres' host='localhost' password='123'"
+#db = f"dbname='{os.getenv('DB_NAME')}' user='{os.getenv('DB_USER')}' host='{os.getenv('DB_HOST')}' password='{os.getenv('DB_PASSWORD')}'"
 conn = psycopg2.connect(db)
 cursor = conn.cursor()
 
@@ -20,10 +21,6 @@ def index():
 @app.route('/game')
 def game():
     return render_template('game.html')
-
-def get_game_count(fen, token):
-    # make request through lichess API, need personal token
-    pass
 
 if __name__ == '__main__':
     app.run(debug=True)
