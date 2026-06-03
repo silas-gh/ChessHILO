@@ -20,7 +20,11 @@ def index():
 
 @app.route('/game')
 def game():
-    return render_template('game.html')
+    cursor.execute("SELECT fen, num_games FROM positions ORDER BY RANDOM() LIMIT 1")
+    row = cursor.fetchone()
+    fen, num_games = row
+    short_fen = fen.split(" ")[0]
+    return render_template('game.html', fen=short_fen, num_games=num_games)
 
 if __name__ == '__main__':
     app.run(host = '0.0.0.0', debug=True)

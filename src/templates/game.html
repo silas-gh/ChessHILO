@@ -1,0 +1,13 @@
+<!-- in <head> -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@chessboard/chessboardjs@1.0.0/www/css/chessboard-1.0.0.min.css">
+<script src="https://unpkg.com/@chessboard/chessboardjs@1.0.0/www/js/chessboard-1.0.0.min.js"></script>
+
+<!-- in <body> -->
+<div id="board" style="width: 400px"></div>
+
+<script>
+  Chessboard('board', {
+    position: '{{ fen }}'  // Flask passes the FEN here
+  });
+</script>
