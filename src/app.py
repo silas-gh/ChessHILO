@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import psycopg2
+import re
+import bcrypt
 import os
 import requests
 from dotenv import load_dotenv
@@ -9,6 +11,7 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = 'dev'
 
+
 db = f"dbname='{os.getenv('DB_NAME')}' user='{os.getenv('DB_USER')}' host='{os.getenv('DB_HOST')}' password='{os.getenv('DB_PASSWORD')}'"
 conn = psycopg2.connect(db)
 cursor = conn.cursor()
@@ -17,16 +20,83 @@ cursor = conn.cursor()
 def index():
     return render_template('home.html')
 
+username_regex = r'^[a-zA-Z0-9_-]{3,30}$'
+password_regex = r'.{3,30}'
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        cursor.execute("SELECT password_hash FROM users WHERE username = %s", (username,))
+        user = cursor.fetchone()
+
+        if user and bcrypt.checkpw(password.encode('utf-8'), user[0].encode('utf-8')):
+            session['username'] = username
+            session['started'] = False
+            return redirect('/dashboard')
+        else:
+            return render_template('login.html', error_msg="Incorrect username or password")
+    
+    return render_template('login.html', error_msg=None)
+    
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        confirm_password = request.form['confirm_password']
+        if not re.match(username_regex, username):
+            return render_template('register.html', error_msg="Invalid username")
+        if not re.match(password_regex, password):
+            return render_template('register.html', error_msg="Invalid password")
+        if password != confirm_password:
+            return render_template('register.html', error_msg="Password does not match with confirm password")
+        
+        password_hash = bcrypt.hashpw(password.encode('utf8'), bcrypt.gensalt()).decode('utf-8')
+        cursor.execute("INSERT INTO users (username, password_hash) VALUES (%s, %s)", (username, password_hash))
+        conn.commit()
+        return redirect('/login')
+
+    return render_template('register.html', error_msg=None)
+
+
+
+
+@app.route('/guest')
+def guest():
+    session['username'] = None
+    session['is_guest'] = True
+    session['started'] = False
+    return redirect('/dashboard')
+
+def user_has_auth():
+    return session.get('username') or session.get('is_guest')
+
+@app.route('/dashboard')
+def dashboard():
+    if not user_has_auth():
+        return redirect('/login')
+    session['started'] = False
+    return render_template('dashboard.html')
+
+@app.route('/signout')
+def signout():
+    session.clear()
+    return redirect('/')
+
 @app.route('/game')
 def game():
+    if not user_has_auth():
+        return redirect('/login')
     if not session.get('started'): # first round, score not initialized
+        session['started'] = True
         session['score'] = 0
         session['seen_fens'] = []
         cursor.execute("SELECT fen, num_games FROM positions ORDER BY RANDOM() LIMIT 1")
         session['fen_left'], session['num_games_left'] = cursor.fetchone() # type:ignore
         session['seen_fens'].append(session['fen_left'])
         session.modified = True
-        session['started'] = True
     else: # the old _right values become the information for the next guess
         session['fen_left'], session['num_games_left'] = session['fen_right'], session['num_games_right'] 
 
@@ -48,21 +118,24 @@ def guess():
     answer = request.form['answer']
     correct_answer = session.get('correct_answer')
     if answer == correct_answer:
-        return redirect(url_for('correct'))
+        return redirect('/correct')
     else:
-        return redirect(url_for('incorrect'))
+        return redirect('/incorrect')
 
 @app.route('/correct')
 def correct():
     session['score'] += 1
-    return redirect(url_for('game'))
+    return redirect('/game')
 
 @app.route('/incorrect')
 def incorrect():
     # save score, add to leaderboard ?
     # or track personal best in the corner or something
     session['started'] = False
-    return redirect(url_for('index'))
+    return redirect('/')
+
+
+
 
 if __name__ == '__main__':
     app.run(host = '0.0.0.0', debug=True)
