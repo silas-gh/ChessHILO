@@ -1,13 +1,42 @@
 <!-- in <head> -->
+<!DOCTYPE html>
+<html>
+<head>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/@chessboard/chessboardjs@1.0.0/www/css/chessboard-1.0.0.min.css">
-<script src="https://unpkg.com/@chessboard/chessboardjs@1.0.0/www/js/chessboard-1.0.0.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
+<script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+</head>
 
-<!-- in <body> -->
-<div id="board" style="width: 400px"></div>
+<body>
+<h1>ChessHILO</h1>
+<p>Score: {{  score  }}</p>
+
+<div id="left">
+  <div id="board-left" style="width: 400px"></div>
+  <p>This position has been played in {{  num_games }} games.</p>
+</div>
+
+<div id="right">
+  <div id="board-right" style="width: 400px"></div>
+  <p>Higher or lower?</p>
+  <form method="POST" action="/guess">
+    <button name="answer" value="higher">Higher</button>
+    <button name="answer" value="lower">Lower</button>
+  </form>
+</div>
 
 <script>
-  Chessboard('board', {
-    position: '{{ fen }}'  // Flask passes the FEN here
-  });
+  var pieceTheme =
+  'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png';
+  Chessboard('board-left', {
+    position: '{{ fen }}', // Flask passes the FEN here
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png'
+    });
+  Chessboard('board-right', {
+    position: '{{ right_fen }}', // Flask passes the FEN here
+    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png'
+    });  
 </script>
+
+</body>
+</html>
