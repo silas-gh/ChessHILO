@@ -9,8 +9,7 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = 'dev'
 
-db = f"dbname='chesshilo' user='postgres' host='localhost' password='123'"
-db = f"dbname='{os.getenv('DB_NAME')}' user='{os.getenv('DB_USER')}' host='db' password='{os.getenv('DB_PASSWORD')}'"
+db = f"dbname='{os.getenv('DB_NAME')}' user='{os.getenv('DB_USER')}' host='{os.getenv('DB_HOST')}' password='{os.getenv('DB_PASSWORD')}'"
 conn = psycopg2.connect(db)
 cursor = conn.cursor()
 
