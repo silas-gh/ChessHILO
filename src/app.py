@@ -19,11 +19,50 @@ def index():
 
 @app.route('/game')
 def game():
-    cursor.execute("SELECT fen, num_games FROM positions ORDER BY RANDOM() LIMIT 1")
-    row = cursor.fetchone()
-    fen, num_games = row
-    short_fen = fen.split(" ")[0]
-    return render_template('game.html', fen=short_fen, num_games=num_games)
+    if not session.get('started'): # first round, score not initialized
+        session['score'] = 0
+        session['seen_fens'] = []
+        cursor.execute("SELECT fen, num_games FROM positions ORDER BY RANDOM() LIMIT 1")
+        session['fen_left'], session['num_games_left'] = cursor.fetchone() # type:ignore
+        session['seen_fens'].append(session['fen_left'])
+        session.modified = True
+        session['started'] = True
+    else: # the old _right values become the information for the next guess
+        session['fen_left'], session['num_games_left'] = session['fen_right'], session['num_games_right'] 
+
+    cursor.execute("SELECT fen, num_games FROM positions WHERE fen != ALL(%s) ORDER BY RANDOM() LIMIT 1", (session['seen_fens'],))
+    session['fen_right'], session['num_games_right'] = cursor.fetchone() # type:ignore
+    session['seen_fens'].append(session['fen_right'])
+    session.modified = True
+
+    if session['num_games_right'] > session['num_games_left']:
+        session['correct_answer'] = 'higher'
+    else:
+        session['correct_answer'] = 'lower'
+
+    return render_template('game.html', score=session['score'], fen_left=session['fen_left'], fen_right=session['fen_right'],
+                            num_games_left=session['num_games_left'], num_games_right=session['num_games_right'] )
+
+@app.route('/guess', methods=['POST'])
+def guess():
+    answer = request.form['answer']
+    correct_answer = session.get('correct_answer')
+    if answer == correct_answer:
+        return redirect(url_for('correct'))
+    else:
+        return redirect(url_for('incorrect'))
+
+@app.route('/correct')
+def correct():
+    session['score'] += 1
+    return redirect(url_for('game'))
+
+@app.route('/incorrect')
+def incorrect():
+    # save score, add to leaderboard ?
+    # or track personal best in the corner or something
+    session['started'] = False
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run(host = '0.0.0.0', debug=True)

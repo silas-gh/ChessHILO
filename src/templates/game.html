@@ -4,6 +4,7 @@
 <head>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
 </head>
 
@@ -13,7 +14,7 @@
 
 <div id="left">
   <div id="board-left" style="width: 400px"></div>
-  <p>This position has been played in {{  num_games }} games.</p>
+  <p>This position has been played in {{  num_games_left }} games.</p>
 </div>
 
 <div id="right">
@@ -29,11 +30,11 @@
   var pieceTheme =
   'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png';
   Chessboard('board-left', {
-    position: '{{ fen }}', // Flask passes the FEN here
+    position: '{{ fen_left }}', // Flask passes the FEN here
     pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png'
     });
   Chessboard('board-right', {
-    position: '{{ right_fen }}', // Flask passes the FEN here
+    position: '{{ fen_right }}', // Flask passes the FEN here
     pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png'
     });  
 </script>
