@@ -10,6 +10,13 @@ body {
   color: white;
 }
 
+.subtitle {
+    color: gray;
+    font-size: 0.9rem;
+    margin-top: -10px;  /* pull it closer to the h1 */
+}
+
+
 a {
   color: gold;
   text-decoration: none;

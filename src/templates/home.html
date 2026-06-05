@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html>
-<head><title>ChessHILO</title></head>
+<head>
+    <title>ChessHILO</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
 <body class="page">
-    <h1>ChessHILO - Based on the Lichess Master Database</h1>
+    <h1>ChessHILO</h1>
+    <p class="subtitle">Based on the Lichess Master Database</p>
     <a href="/guest" style="display: block">Play as guest</a>
     <a href="/login" style="display: block">Login</a>
     <a href="/register" style="display: block">Create an account</a>
