@@ -1,5 +1,97 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  height: 100vh;
+  font-family: sans-serif;
+  overflow: hidden;
+}
+
 #left, #right {
-  display: inline-block;
-  vertical-align: top;
-  margin: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  position: relative;
+}
+
+#left  { background: #2a2a2a; }
+#right { background: #1a1a1a; }
+
+#vs {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  background: white;
+  color: black;
+  border-radius: 50%;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+h1 { display: none; } 
+
+.num-games {
+  font-size: 56px;
+  font-weight: bold;
+  color: gold;
+}
+
+.label {
+  font-size: 14px;
+  color: white;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+button {
+  width: 180px;
+  padding: 12px 0;
+  border-radius: 999px;
+  border: 2px solid gold;
+  background: transparent;
+  color: gold;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  letter-spacing: 1px;
+}
+
+button:hover {
+  background: gold;
+  color: black;
+}
+
+#score {
+  position: fixed;
+  bottom: 16px;
+  right: 24px;
+  color: white;
+  font-size: 18px;
+}
+
+#quit {
+  position: fixed;
+  top: 16px;
+  right: 24px;
+  color: white;
+  font-size: 14px;
 }

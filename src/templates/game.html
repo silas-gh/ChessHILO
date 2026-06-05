@@ -10,23 +10,27 @@
 
 <body>
 <h1>ChessHILO</h1>
-<p>Score: {{  score  }}</p>
 
 <div id="left">
   <div id="board-left" style="width: 400px"></div>
-  <p>This position has been played in {{  num_games_left }} games.</p>
+  <p class="num-games">{{  num_games_left }}</p>
+  <p class="label">games played</p>
 </div>
+
+<div id="vs">VS</div>
 
 <div id="right">
   <div id="board-right" style="width: 400px"></div>
-  <p>Higher or lower?</p>
+  <p class="label">Higher or lower?</p>
   <form method="POST" action="/guess">
     <button name="answer" value="higher">Higher</button>
     <button name="answer" value="lower">Lower</button>
   </form>
 </div>
 
-<a href="/dashboard" style="display: block">Quit</a>
+<p id="score">Score: {{  score  }}</p>
+
+<a id="quit" href="/dashboard" style="display: block">Quit</a>
 
 <script>
   var pieceTheme =
