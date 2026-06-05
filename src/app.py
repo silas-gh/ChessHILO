@@ -20,7 +20,10 @@ cursor = conn.cursor()
 def index():
     return render_template('home.html')
 
+# lowercase and uppercase letters, as well as "_" or "-" are allowed, size must be 3-30 characters
 username_regex = r'^[a-zA-Z0-9_-]{3,30}$'
+
+# any characters allowed, size must also be 3-30 characters
 password_regex = r'.{3,30}'
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -48,26 +51,28 @@ def register():
         username = request.form['username']
         password = request.form['password']
         confirm_password = request.form['confirm_password']
+
+        # Validating username and password according to the defined regexes
         if not re.match(username_regex, username):
             return render_template('register.html', error_msg="Invalid username")
         if not re.match(password_regex, password):
             return render_template('register.html', error_msg="Invalid password")
         if password != confirm_password:
             return render_template('register.html', error_msg="Password does not match with confirm password")
+
+        # Making sure that the username hasn't been taken already
         cursor.execute("SELECT 1 FROM users WHERE username = %s", (username,))
         name_already_used = cursor.fetchone()
         if name_already_used:
-            return render_template('register.html', error_msg="Username already used")
+            return render_template('register.html', error_msg="Username already taken")
         
+        # Hashing the password and adding the username and password_hash to the database
         password_hash = bcrypt.hashpw(password.encode('utf8'), bcrypt.gensalt()).decode('utf-8')
         cursor.execute("INSERT INTO users (username, password_hash) VALUES (%s, %s)", (username, password_hash))
         conn.commit()
         return redirect('/login')
 
     return render_template('register.html', error_msg=None)
-
-
-
 
 @app.route('/guest')
 def guest():
@@ -96,7 +101,9 @@ def signout():
 def game():
     if not user_has_auth():
         return redirect('/login')
-    if not session.get('started'): # first round, score not initialized
+    
+    # First round, initialize session variables
+    if not session.get('started'): 
         session['started'] = True
         session['score'] = 0
         session['seen_fens'] = []
@@ -111,7 +118,6 @@ def game():
     session['fen_right'], session['num_games_right'] = cursor.fetchone() # type:ignore
     session['seen_fens'].append(session['fen_right'])
     session.modified = True
-
     if session['num_games_right'] > session['num_games_left']:
         session['correct_answer'] = 'higher'
     else:
