@@ -52,7 +52,7 @@ def register():
             return render_template('register.html', error_msg="Invalid password")
         if password != confirm_password:
             return render_template('register.html', error_msg="Password does not match with confirm password")
-        cursor.execute("SELECT 1 FROM users WHERE username = %s", username)
+        cursor.execute("SELECT 1 FROM users WHERE username = %s", (username,))
         name_already_used = cursor.fetchone()
         if name_already_used:
             return render_template('register.html', error_msg="Username already used")
