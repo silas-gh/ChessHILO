@@ -12,7 +12,8 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./sql/init.sql:/docker-entrypoint-initdb.d/01_init.sql
-      - ./sql/import_positions.sql:/docker-entrypoint-initdb.d/02_import_positions.sql  # auto-runs on first start
+      - ./sql/positions.csv:/docker-entrypoint-initdb.d/02_positions.csv
+      #- ./sql/import_positions.sql:/docker-entrypoint-initdb.d/02_import_positions.sql  # auto-runs on first start
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s

@@ -3,6 +3,8 @@ CREATE TABLE IF NOT EXISTS positions (
     num_games INT DEFAULT 0
 );
 
+COPY positions (fen, num_games) FROM '/docker-entrypoint-initdb.d/02_positions.csv' DELIMITER ',' CSV HEADER;
+
 CREATE TABLE IF NOT EXISTS users (
     user_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     username VARCHAR(30),
@@ -13,3 +15,4 @@ CREATE TABLE IF NOT EXISTS leaderboard (
     user_id uuid PRIMARY KEY REFERENCES users(user_id),
     score INT DEFAULT 0
 );
+

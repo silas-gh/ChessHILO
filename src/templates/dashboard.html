@@ -6,7 +6,11 @@
 <body class="page">
     <h1>ChessHILO</h1>
     <a href="/game" style="display: block">New game</a>
-    <a href="/signout" style="display: block">Sign out</a>
     <a href="/leaderboard" style="display: block">Leaderboard</a>
+    {% if session.get('is_guest') %}
+        <a href="/" style="display: block">Back to home</a>
+    {% else %}
+        <a href="/signout" style="display: block">Sign out</a>
+    {% endif %}
 </body>
 </html>
