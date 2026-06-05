@@ -1,5 +1,5 @@
 # ChessHILO
-Higher/Lower game based on chess
+Chess Higher/Lower game using data from Lichess' Master Database
 
 # Setting up Docker
 
@@ -30,7 +30,8 @@ Download Docker desktop: https://www.docker.com/products/docker-desktop/
     docker-compose up --build
     ```
 
-The database will be created automatically and `init.sql`, `import_positions.sql` with seed position data will run on first startup.
+The database will be created automatically - On startup, `init.sql` will create the SQL tables a
+nd copy position data from positions.csv.
 
 # E/R Diagram
 
