@@ -28,11 +28,13 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        cursor.execute("SELECT password_hash FROM users WHERE username = %s", (username,))
+        cursor.execute("SELECT user_id, password_hash FROM users WHERE username = %s", (username,))
         user = cursor.fetchone()
 
-        if user and bcrypt.checkpw(password.encode('utf-8'), user[0].encode('utf-8')):
+        if user and bcrypt.checkpw(password.encode('utf-8'), user[1].encode('utf-8')):
+            session['user_id'] = str(user[0])
             session['username'] = username
+            session['is_guest'] = False
             session['started'] = False
             return redirect('/dashboard')
         else:
@@ -69,6 +71,7 @@ def register():
 
 @app.route('/guest')
 def guest():
+    session.pop('user_id', None)
     session['username'] = None
     session['is_guest'] = True
     session['started'] = False
@@ -133,12 +136,36 @@ def correct():
 
 @app.route('/incorrect')
 def incorrect():
-    # save score, add to leaderboard ?
-    # or track personal best in the corner or something
+    user_id = session.get('user_id')
+    score = session.get('score', 0)
+
+    print("saving score:", score, "for user_id:", user_id)
+
+    if user_id:
+        cursor.execute("""
+            INSERT INTO leaderboard (user_id, score)
+            VALUES (%s, %s)
+            ON CONFLICT (user_id)
+            DO UPDATE SET score = GREATEST(leaderboard.score, EXCLUDED.score)
+        """, (user_id, session.get('score', 0)))
+        conn.commit()
+
     session['started'] = False
-    return redirect('/')
+    return redirect('/leaderboard')
 
+@app.route('/leaderboard')
+def leaderboard():
+    cursor.execute("""
+        SELECT users.username, leaderboard.score
+        FROM leaderboard
+        JOIN users ON leaderboard.user_id = users.user_id
+        ORDER BY leaderboard.score DESC, users.username ASC
+        LIMIT 10
+    """)
 
+    scores = cursor.fetchall()
+
+    return render_template('leaderboard.html', scores=scores)
 
 
 if __name__ == '__main__':

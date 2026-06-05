@@ -95,3 +95,41 @@ button:hover {
   color: white;
   font-size: 14px;
 }
+
+table {
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.leaderboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  background: #1a1a1a;
+  color: white;
+}
+
+.leaderboard h1 {
+  display: block;
+  color: gold;
+}
+
+.leaderboard table {
+  border-collapse: collapse;
+  min-width: 320px;
+  color: white;
+}
+
+.leaderboard th,
+.leaderboard td {
+  padding: 10px 16px;
+  border-bottom: 1px solid #333;
+  text-align: left;
+}
+
+.leaderboard a {
+  color: gold;
+  margin: 0 8px;
+}
