@@ -31,3 +31,7 @@ Download Docker desktop: https://www.docker.com/products/docker-desktop/
     ```
 
 The database will be created automatically and `init.sql`, `import_positions.sql` with seed position data will run on first startup.
+
+# E/R Diagram
+
+The E/R diagram is in ./doc/. There is both an XML file and a screenshot of the diagram.
