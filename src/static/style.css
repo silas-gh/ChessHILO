@@ -5,64 +5,58 @@
 }
 
 body {
-  display: flex;
-  height: 100vh;
   font-family: sans-serif;
-  overflow: hidden;
+  background: #1a1a1a;
+  color: white;
 }
 
-#left, #right {
-  flex: 1;
+a {
+  color: gold;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.page {
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  position: relative;
+  gap: 24px;
 }
 
-#left  { background: #2a2a2a; }
-#right { background: #1a1a1a; }
-
-#vs {
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 10;
-  background: white;
-  color: black;
-  border-radius: 50%;
-  width: 64px;
-  height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 20px;
-}
-
-h1 { display: none; } 
-
-.num-games {
-  font-size: 56px;
-  font-weight: bold;
+.page h1 {
+  display: block;
   color: gold;
 }
 
-.label {
-  font-size: 14px;
-  color: white;
+.page nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
 }
 
-form {
+.page form {
   display: flex;
   flex-direction: column;
   gap: 12px;
   align-items: center;
 }
 
-button {
+.page input {
+  width: 220px;
+  padding: 10px 12px;
+  border: 1px solid #444;
+  background: #2a2a2a;
+  color: white;
+}
+
+.page button,
+.game button {
   width: 180px;
   padding: 12px 0;
   border-radius: 999px;
@@ -72,15 +66,72 @@ button {
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
-  letter-spacing: 1px;
 }
 
-button:hover {
+.page button:hover,
+.game button:hover {
   background: gold;
   color: black;
 }
 
-#score {
+.page table {
+  border-collapse: collapse;
+  min-width: 320px;
+}
+
+.page th,
+.page td {
+  padding: 10px 16px;
+  border-bottom: 1px solid #333;
+  text-align: left;
+}
+
+.game {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.game h1 {
+  display: none;
+}
+
+.game #left,
+.game #right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  position: relative;
+}
+
+.game #left { background: #2a2a2a; }
+.game #right { background: #1a1a1a; }
+
+.game #vs {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: white;
+  color: black;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.game #score {
   position: fixed;
   bottom: 16px;
   right: 24px;
@@ -88,48 +139,10 @@ button:hover {
   font-size: 18px;
 }
 
-#quit {
+.game #quit {
   position: fixed;
   top: 16px;
   right: 24px;
-  color: white;
+  color: gold;
   font-size: 14px;
-}
-
-table {
-    border-collapse: collapse;
-    margin: 20px 0;
-}
-
-.leaderboard {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 24px;
-  background: #1a1a1a;
-  color: white;
-}
-
-.leaderboard h1 {
-  display: block;
-  color: gold;
-}
-
-.leaderboard table {
-  border-collapse: collapse;
-  min-width: 320px;
-  color: white;
-}
-
-.leaderboard th,
-.leaderboard td {
-  padding: 10px 16px;
-  border-bottom: 1px solid #333;
-  text-align: left;
-}
-
-.leaderboard a {
-  color: gold;
-  margin: 0 8px;
 }
