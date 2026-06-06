@@ -30,8 +30,8 @@ Download Docker desktop: https://www.docker.com/products/docker-desktop/
     docker-compose up --build
     ```
 
-The database will be created automatically - On startup, `init.sql` will create the SQL tables a
-nd copy position data from positions.csv.
+The database will be created automatically - On startup, `init.sql` will create the SQL tables and 
+copy position data from positions.csv.
 
 To open the webapp, you can open "chess_app" directly in your docker desktop under the newly created
 "chesshilo" container. Alternatively, you can enter "http://localhost:5000/" in your browser, where
