@@ -1,0 +1,6 @@
+For this project, we have used generative AI (claude.ai) in the following way(s):
+
+Parts of the html and especially the css formatting were created with AI. Some parts were
+initially used directly from claude, and we were then able to "pattern match" the syntax and
+structure for other bits. Thus, everything was not created with claude, but we used it as a
+helper for this part since we had limited to no experience it prior to this project.

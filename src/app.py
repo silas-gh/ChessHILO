@@ -1,9 +1,8 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, session
 import psycopg2
 import re
-import bcrypt
+import bcrypt # type:ignore
 import os
-import requests
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -18,6 +17,8 @@ cursor = conn.cursor()
 
 @app.route('/')
 def index():
+    if session.get('is_guest'):
+        session.clear()
     return render_template('home.html')
 
 # lowercase and uppercase letters, as well as "_" or "-" are allowed, size must be 3-30 characters
@@ -66,7 +67,8 @@ def register():
         if name_already_used:
             return render_template('register.html', error_msg="Username already taken")
         
-        # Hashing the password and adding the username and password_hash to the database
+        # Hashing the password and adding the username and password_hash to the database,
+        # since we never want to store passwords directly.
         password_hash = bcrypt.hashpw(password.encode('utf8'), bcrypt.gensalt()).decode('utf-8')
         cursor.execute("INSERT INTO users (username, password_hash) VALUES (%s, %s)", (username, password_hash))
         conn.commit()
@@ -88,7 +90,7 @@ def user_has_auth():
 @app.route('/dashboard')
 def dashboard():
     if not user_has_auth():
-        return redirect('/login')
+        return redirect('/')
     session['started'] = False
     return render_template('dashboard.html')
 
@@ -100,7 +102,7 @@ def signout():
 @app.route('/game')
 def game():
     if not user_has_auth():
-        return redirect('/login')
+        return redirect('/')
     
     # First round, initialize session variables
     if not session.get('started'): 
@@ -128,6 +130,8 @@ def game():
 
 @app.route('/guess', methods=['POST'])
 def guess():
+    if not user_has_auth():
+        return redirect('/')
     answer = request.form['answer']
     correct_answer = session.get('correct_answer')
     if answer == correct_answer:
@@ -137,11 +141,15 @@ def guess():
 
 @app.route('/correct')
 def correct():
+    if not user_has_auth():
+        return redirect('/')
     session['score'] += 1
     return redirect('/game')
 
 @app.route('/incorrect')
 def incorrect():
+    if not user_has_auth():
+        return redirect('/')
     user_id = session.get('user_id')
     score = session.get('score', 0)
 
@@ -161,6 +169,8 @@ def incorrect():
 
 @app.route('/leaderboard')
 def leaderboard():
+    if not user_has_auth():
+        return redirect('/')
     cursor.execute("""
         SELECT users.username, leaderboard.score
         FROM leaderboard
