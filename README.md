@@ -1,6 +1,8 @@
 # ChessHILO
 Chess Higher/Lower game using data from Lichess' Master Database
 
+![ChessHILO](doc/chesshilo.png)
+
 # Setting up the web-app with Docker
 
 ## Requirements
